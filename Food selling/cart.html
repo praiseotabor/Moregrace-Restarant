@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Food Order Site</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .food-item {
+      margin: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      max-width: 300px;
+    }
+
+    .cart-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #E63946;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 5px;
+      z-index: 1001;
+    }
+
+    /* Sidebar */
+    .cart-sidebar {
+      position: fixed;
+      right: -320px;
+      top: 0;
+      width: 300px;
+      height: 100%;
+      background-color: #fff8e7;
+      box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      transition: right 0.3s ease;
+      z-index: 1000;
+    }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
+
+    .cart-sidebar h4 {
+      margin-top: 0;
+    }
+
+    .cart-sidebar ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .cart-sidebar li {
+      margin-bottom: 10px;
+    }
+
+    .cart-sidebar li a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .cart-sidebar li a:hover {
+      text-decoration: underline;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #E63946;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .total {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Food Items -->
+  <div class="food-item">
+    <h3>Fried Rice</h3>
+    <p>₦2000</p>
+    <button onclick="addToCart('Fried Rice', 2000)">Add to Cart</button>
+  </div>
+
+  <div class="food-item">
+    <h3>Jollof Rice</h3>
+    <p>₦1800</p>
+    <button onclick="addToCart('Jollof Rice', 1800)">Add to Cart</button>
+  </div>
+
+  <div class="food-item">
+    <h3>Moi Moi</h3>
+    <p>₦500</p>
+    <button onclick="addToCart('Moi Moi', 500)">Add to Cart</button>
+  </div>
+
+  <!-- Cart Button -->
+  <button class="cart-button" onclick="toggleCart()">🛒 Cart</button>
+
+  <!-- Cart Sidebar -->
+  <div id="cartSidebar" class="cart-sidebar">
+    <button class="close-btn" onclick="toggleCart()">X</button>
+    <h4>Your Cart</h4>
+    <ul id="cartItems"></ul>
+    <p class="total">
+  <a href="#" id="whatsappLink" onclick="sendFullOrder()" style="color:#E63946; text-decoration:none;">
+    Total: ₦<span id="totalAmount">0</span> — Click to Order
+  </a>
+</p>
+
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    const cart = [];
+
+    function addToCart(itemName, price) {
+      cart.push({ name: itemName, price: price });
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cartList = document.getElementById('cartItems');
+      const totalEl = document.getElementById('totalAmount');
+      cartList.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        total += item.price;
+        const listItem = document.createElement('li');
+        const link = `https://wa.me/2347012345678?text=${encodeURIComponent('I want to order ' + item.name)}`;
+        listItem.innerHTML = `<a href="${link}" target="_blank">${item.name} - ₦${item.price}</a>`;
+        cartList.appendChild(listItem);
+      });
+
+      totalEl.textContent = total;
+    }
+
+    function toggleCart() {
+      const sidebar = document.getElementById('cartSidebar');
+      sidebar.classList.toggle('open');
+    }
+
+    function sendFullOrder() {
+  if (cart.length === 0) return;
+
+  let message = "I want to order:\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    message += `- ${item.name} (₦${item.price})\n`;
+    total += item.price;
+  });
+
+  message += `Total: ₦${total}`;
+
+  const whatsappURL = `https://wa.me/2347012345678?text=${encodeURIComponent(message)}`;
+  window.open(whatsappURL, '_blank');
+}
+
+  </script>
+
+</body>
+</html>
